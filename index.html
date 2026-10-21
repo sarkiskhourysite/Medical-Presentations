@@ -3,49 +3,214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Downloads</title>
+  <title>Medical Presentations</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px; }
-    ul { list-style: none; padding: 0; }
-    li { border-bottom: 1px solid #ddd; }
-    a { display: block; padding: 12px 4px; text-decoration: none; color: #0366d6; }
-    a:hover { background: #f4f8ff; }
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --text: #1b2430;
+      --muted: #6b7788;
+      --border: #e3e9f2;
+      --accent: #1f6feb;
+      --accent-soft: #e8f0fe;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 4px 14px rgba(16, 24, 40, .06);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e141b;
+        --card: #161e28;
+        --text: #e8edf3;
+        --muted: #8b98a9;
+        --border: #263140;
+        --accent: #5b9dff;
+        --accent-soft: #1b2a42;
+        --shadow: none;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+    header {
+      background: linear-gradient(135deg, #0f4c9c, #1f6feb 60%, #38b6ff);
+      color: #fff;
+      padding: 48px 16px 80px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.5px; }
+    header p  { margin: 0; opacity: .9; font-size: 16px; }
+    main { max-width: 760px; margin: -48px auto 48px; padding: 0 16px; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+    .search { flex: 1; position: relative; }
+    .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .search input {
+      width: 100%;
+      padding: 11px 12px 11px 40px;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+    .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .count { font-size: 14px; color: var(--muted); white-space: nowrap; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li + li { border-top: 1px solid var(--border); }
+    a.file {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 8px;
+      border-radius: 10px;
+      color: inherit;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    a.file:hover { background: var(--accent-soft); }
+    .badge {
+      flex: none;
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 11px; font-weight: 700; letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+    .info { flex: 1; min-width: 0; }
+    .title { font-size: 16px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sub   { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .dl {
+      flex: none;
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 14px; font-weight: 600;
+    }
+    a.file:hover .dl { background: var(--accent); color: #fff; }
+    .message { text-align: center; color: var(--muted); padding: 32px 8px; }
+    footer { text-align: center; color: var(--muted); font-size: 13px; padding-bottom: 32px; }
+    @media (max-width: 480px) { .dl span { display: none; } .dl { padding: 8px; } }
   </style>
 </head>
 <body>
-  <h1>Files</h1>
-  <ul id="list"><li>Loading…</li></ul>
+  <header>
+    <h1>Medical Presentations</h1>
+    <p>Click a file to download it.</p>
+  </header>
+
+  <main>
+    <div class="panel">
+      <div class="toolbar">
+        <label class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="search" type="search" placeholder="Search files..." autocomplete="off">
+        </label>
+        <span class="count" id="count"></span>
+      </div>
+      <ul id="list"><li class="message">Loading…</li></ul>
+    </div>
+  </main>
+
+  <footer>Files are downloaded directly from this site.</footer>
 
   <script>
-    // ---- Settings (change these three) ----
-    const USER   = "sarkiskhourysite";
-    const REPO   = "Medical-Presentations";
-    const FOLDER = "files";
-    // ---------------------------------------
+    // ---- Settings ----
+    // The user name and repository are detected automatically from the page address
+    // (https://USER.github.io/REPO/). Fill them in only if the page is on a custom domain.
+    const USER   = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] : "YOUR-USERNAME";
+    const REPO   = location.hostname.endsWith(".github.io") ? location.pathname.split("/")[1] : "YOUR-REPO";
+    const FOLDER = "files";   // folder that holds the files to download
+    // ------------------
 
     const api  = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
     const list = document.getElementById("list");
+    const count = document.getElementById("count");
+    const search = document.getElementById("search");
+
+    const COLORS = {
+      pdf: "#e5484d", ppt: "#f0762b", pptx: "#f0762b", doc: "#2b6cde", docx: "#2b6cde",
+      xls: "#2e9e5b", xlsx: "#2e9e5b", csv: "#2e9e5b", zip: "#8e5bd6", rar: "#8e5bd6",
+      jpg: "#14a3a8", jpeg: "#14a3a8", png: "#14a3a8", gif: "#14a3a8",
+      mp4: "#d6409f", mov: "#d6409f", mp3: "#d6409f", txt: "#6b7788"
+    };
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1048576) return (bytes / 1024).toFixed(0) + " KB";
+      return (bytes / 1048576).toFixed(1) + " MB";
+    }
+
+    let files = [];
+
+    function render() {
+      const q = search.value.trim().toLowerCase();
+      const shown = files.filter(f => (f.label + " " + f.name).toLowerCase().includes(q));
+      list.innerHTML = "";
+      shown.forEach(f => {
+        const ext = (f.name.split(".").pop() || "file").toLowerCase();
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.className = "file";
+        a.href = `${FOLDER}/${encodeURIComponent(f.name)}`;
+        a.download = f.name;
+
+        const badge = document.createElement("div");
+        badge.className = "badge";
+        badge.style.background = COLORS[ext] || "#5b6b7f";
+        badge.textContent = ext.slice(0, 4);
+
+        const info = document.createElement("div");
+        info.className = "info";
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = f.label;
+        const sub = document.createElement("div");
+        sub.className = "sub";
+        sub.textContent = (f.label !== f.name ? f.name + " · " : "") + formatSize(f.size);
+        info.append(title, sub);
+
+        const dl = document.createElement("div");
+        dl.className = "dl";
+        dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download</span>';
+
+        a.append(badge, info, dl);
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      if (!shown.length) {
+        list.innerHTML = `<li class="message">${files.length ? "No file matches your search." : "No files yet."}</li>`;
+      }
+      count.textContent = files.length ? `${shown.length} of ${files.length}` : "";
+    }
 
     Promise.all([
       fetch(api).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
       fetch(`${FOLDER}/names.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}))
     ])
     .then(([items, nicknames]) => {
-      list.innerHTML = "";
-      items
+      files = items
         .filter(i => i.type === "file" && i.name !== "names.json")
-        .forEach(f => {
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          a.href = `${FOLDER}/${encodeURIComponent(f.name)}`;
-          a.download = f.name;
-          a.textContent = nicknames[f.name] || f.name;
-          li.appendChild(a);
-          list.appendChild(li);
-        });
-      if (!list.children.length) list.innerHTML = "<li>No files yet.</li>";
+        .map(i => ({ name: i.name, size: i.size, label: nicknames[i.name] || i.name }))
+        .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" }));
+      render();
     })
-    .catch(() => list.innerHTML = "<li>Could not load the file list.</li>");
+    .catch(() => { list.innerHTML = '<li class="message">Could not load the file list.</li>'; });
+
+    search.addEventListener("input", render);
   </script>
 </body>
 </html>
