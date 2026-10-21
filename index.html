@@ -6,57 +6,78 @@
   <title>Medical Presentations</title>
   <style>
     :root {
-      --bg: #f3f6fb;
+      --bg: #f4f8fa;
       --card: #ffffff;
-      --text: #1b2430;
-      --muted: #6b7788;
-      --border: #e3e9f2;
-      --accent: #1f6feb;
-      --accent-soft: #e8f0fe;
-      --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 4px 14px rgba(16, 24, 40, .06);
+      --text: #14232f;
+      --muted: #5f7280;
+      --border: #dce6ec;
+      --navy: #0b2e4f;
+      --teal: #0e8a8a;
+      --teal-dark: #0a6e6e;
+      --teal-soft: #e3f4f3;
+      --shadow: 0 1px 2px rgba(11, 46, 79, .06), 0 6px 20px rgba(11, 46, 79, .07);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0e141b;
-        --card: #161e28;
-        --text: #e8edf3;
-        --muted: #8b98a9;
-        --border: #263140;
-        --accent: #5b9dff;
-        --accent-soft: #1b2a42;
+        --bg: #0c1319;
+        --card: #131d26;
+        --text: #e6eef3;
+        --muted: #8ba0af;
+        --border: #24323f;
+        --navy: #08202f;
+        --teal: #3cc2bd;
+        --teal-dark: #5fd3ce;
+        --teal-soft: #14302f;
         --shadow: none;
       }
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.4;
+      line-height: 1.45;
     }
+
+    /* ---------- Header ---------- */
     header {
-      background: linear-gradient(135deg, #0f4c9c, #1f6feb 60%, #38b6ff);
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0b2e4f 0%, #0f4d6e 55%, #0e8a8a 100%);
       color: #fff;
-      padding: 48px 16px 80px;
+      padding: 52px 16px 92px;
       text-align: center;
     }
-    header h1 { margin: 0 0 8px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.5px; }
-    header p  { margin: 0; opacity: .9; font-size: 16px; }
-    main { max-width: 760px; margin: -48px auto 48px; padding: 0 16px; }
+    header .ecg {
+      position: absolute; left: 0; right: 0; bottom: 38px;
+      width: 100%; height: 70px; opacity: .22;
+    }
+    .brand { position: relative; display: inline-flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .cross {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    header h1 { position: relative; margin: 0 0 8px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.4px; font-weight: 700; }
+    header p  { position: relative; margin: 0 auto; max-width: 520px; opacity: .92; font-size: 16px; }
+
+    /* ---------- Main panel ---------- */
+    main { max-width: 800px; margin: -52px auto 32px; padding: 0 16px; position: relative; }
     .panel {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
       box-shadow: var(--shadow);
-      padding: 16px;
+      padding: 18px;
     }
-    .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+    .toolbar { display: flex; gap: 12px; align-items: center; }
     .search { flex: 1; position: relative; }
-    .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); }
     .search input {
       width: 100%;
-      padding: 11px 12px 11px 40px;
+      padding: 12px 12px 12px 42px;
       font-size: 15px;
       color: var(--text);
       background: var(--bg);
@@ -64,64 +85,107 @@
       border-radius: 10px;
       outline: none;
     }
-    .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .search input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft); }
     .count { font-size: 14px; color: var(--muted); white-space: nowrap; }
-    ul { list-style: none; margin: 0; padding: 0; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+    .chip {
+      font: inherit; font-size: 14px; font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .chip:hover { border-color: var(--teal); color: var(--teal-dark); }
+    .chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+    @media (prefers-color-scheme: dark) { .chip.active { color: #06201f; } }
+
+    /* ---------- File list ---------- */
+    ul { list-style: none; margin: 6px 0 0; padding: 0; }
     li + li { border-top: 1px solid var(--border); }
     a.file {
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      display: flex; align-items: center; gap: 14px;
       padding: 14px 8px;
       border-radius: 10px;
-      color: inherit;
-      text-decoration: none;
+      color: inherit; text-decoration: none;
       transition: background .15s;
     }
-    a.file:hover { background: var(--accent-soft); }
+    a.file:hover { background: var(--teal-soft); }
+    a.file:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
     .badge {
-      flex: none;
-      width: 46px; height: 46px;
-      border-radius: 12px;
+      flex: none; width: 46px; height: 46px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      color: #fff;
-      font-size: 11px; font-weight: 700; letter-spacing: .3px;
-      text-transform: uppercase;
+      color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase;
     }
     .info { flex: 1; min-width: 0; }
-    .title { font-size: 16px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .title { font-size: 16px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .sub   { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .dl {
-      flex: none;
-      display: flex; align-items: center; gap: 6px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
+      flex: none; display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 999px;
+      background: var(--teal-soft); color: var(--teal-dark);
       font-size: 14px; font-weight: 600;
     }
-    a.file:hover .dl { background: var(--accent); color: #fff; }
-    .message { text-align: center; color: var(--muted); padding: 32px 8px; }
-    footer { text-align: center; color: var(--muted); font-size: 13px; padding-bottom: 32px; }
-    @media (max-width: 480px) { .dl span { display: none; } .dl { padding: 8px; } }
+    a.file:hover .dl { background: var(--teal); color: #fff; }
+    .message { text-align: center; color: var(--muted); padding: 36px 8px; }
+
+    /* ---------- Footer / disclaimer ---------- */
+    .disclaimer {
+      margin-top: 18px; padding: 14px 16px;
+      border-left: 4px solid var(--teal);
+      background: var(--card);
+      border-radius: 0 10px 10px 0;
+      font-size: 13px; color: var(--muted);
+      border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .disclaimer strong { color: var(--text); }
+    footer { text-align: center; color: var(--muted); font-size: 13px; padding: 0 16px 36px; }
+
+    @media (max-width: 520px) {
+      .dl span { display: none; } .dl { padding: 8px; }
+      .toolbar { flex-direction: column; align-items: stretch; gap: 6px; }
+      .count { text-align: right; }
+    }
   </style>
 </head>
 <body>
   <header>
+    <svg class="ecg" viewBox="0 0 1200 70" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="0,38 260,38 290,38 310,12 335,62 360,22 380,38 640,38 670,38 690,12 715,62 740,22 760,38 1200,38"/>
+    </svg>
+    <div class="brand">
+      <div class="cross" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>
+      </div>
+    </div>
     <h1>Medical Presentations</h1>
-    <p>Click a file to download it.</p>
+    <p>Educational resources and clinical teaching material for healthcare professionals.</p>
   </header>
 
   <main>
     <div class="panel">
       <div class="toolbar">
         <label class="search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-          <input id="search" type="search" placeholder="Search files..." autocomplete="off">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="search" type="search" placeholder="Search by title or topic..." aria-label="Search presentations" autocomplete="off">
         </label>
-        <span class="count" id="count"></span>
+        <span class="count" id="count" aria-live="polite"></span>
       </div>
+
+      <div class="chips" id="chips" role="group" aria-label="Filter by file type">
+        <button class="chip active" data-type="all">All</button>
+        <button class="chip" data-type="slides">Presentations</button>
+        <button class="chip" data-type="docs">Documents</button>
+        <button class="chip" data-type="other">Other</button>
+      </div>
+
       <ul id="list"><li class="message">Loading…</li></ul>
+    </div>
+
+    <div class="disclaimer">
+      <strong>For healthcare professionals.</strong> This material is intended for education and professional reference. It does not replace clinical judgment, local guidelines or the care of a patient by a qualified physician.
     </div>
   </main>
 
@@ -136,17 +200,28 @@
     const FOLDER = "files";   // folder that holds the files to download
     // ------------------
 
-    const api  = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
-    const list = document.getElementById("list");
-    const count = document.getElementById("count");
+    const api    = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
+    const list   = document.getElementById("list");
+    const count  = document.getElementById("count");
     const search = document.getElementById("search");
+    const chips  = document.getElementById("chips");
 
     const COLORS = {
-      pdf: "#e5484d", ppt: "#f0762b", pptx: "#f0762b", doc: "#2b6cde", docx: "#2b6cde",
-      xls: "#2e9e5b", xlsx: "#2e9e5b", csv: "#2e9e5b", zip: "#8e5bd6", rar: "#8e5bd6",
-      jpg: "#14a3a8", jpeg: "#14a3a8", png: "#14a3a8", gif: "#14a3a8",
-      mp4: "#d6409f", mov: "#d6409f", mp3: "#d6409f", txt: "#6b7788"
+      pdf: "#c2413f", ppt: "#d9622b", pptx: "#d9622b", key: "#d9622b",
+      doc: "#2a64c5", docx: "#2a64c5", txt: "#5f7280",
+      xls: "#2a8a57", xlsx: "#2a8a57", csv: "#2a8a57",
+      zip: "#7a52b8", rar: "#7a52b8",
+      jpg: "#0e8a8a", jpeg: "#0e8a8a", png: "#0e8a8a", gif: "#0e8a8a",
+      mp4: "#b53a86", mov: "#b53a86", mp3: "#b53a86"
     };
+    const SLIDES = ["ppt", "pptx", "key", "odp"];
+    const DOCS   = ["pdf", "doc", "docx", "txt", "odt", "xls", "xlsx", "csv"];
+
+    function typeOf(ext) {
+      if (SLIDES.includes(ext)) return "slides";
+      if (DOCS.includes(ext)) return "docs";
+      return "other";
+    }
 
     function formatSize(bytes) {
       if (bytes < 1024) return bytes + " B";
@@ -155,13 +230,17 @@
     }
 
     let files = [];
+    let activeType = "all";
 
     function render() {
       const q = search.value.trim().toLowerCase();
-      const shown = files.filter(f => (f.label + " " + f.name).toLowerCase().includes(q));
+      const shown = files.filter(f =>
+        (activeType === "all" || f.type === activeType) &&
+        (f.label + " " + f.name).toLowerCase().includes(q)
+      );
+
       list.innerHTML = "";
       shown.forEach(f => {
-        const ext = (f.name.split(".").pop() || "file").toLowerCase();
         const li = document.createElement("li");
         const a = document.createElement("a");
         a.className = "file";
@@ -170,8 +249,8 @@
 
         const badge = document.createElement("div");
         badge.className = "badge";
-        badge.style.background = COLORS[ext] || "#5b6b7f";
-        badge.textContent = ext.slice(0, 4);
+        badge.style.background = COLORS[f.ext] || "#4f6272";
+        badge.textContent = f.ext.slice(0, 4);
 
         const info = document.createElement("div");
         info.className = "info";
@@ -185,12 +264,13 @@
 
         const dl = document.createElement("div");
         dl.className = "dl";
-        dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download</span>';
+        dl.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg><span>Download</span>';
 
         a.append(badge, info, dl);
         li.appendChild(a);
         list.appendChild(li);
       });
+
       if (!shown.length) {
         list.innerHTML = `<li class="message">${files.length ? "No file matches your search." : "No files yet."}</li>`;
       }
@@ -204,13 +284,23 @@
     .then(([items, nicknames]) => {
       files = items
         .filter(i => i.type === "file" && i.name !== "names.json")
-        .map(i => ({ name: i.name, size: i.size, label: nicknames[i.name] || i.name }))
+        .map(i => {
+          const ext = (i.name.includes(".") ? i.name.split(".").pop() : "file").toLowerCase();
+          return { name: i.name, size: i.size, ext, type: typeOf(ext), label: nicknames[i.name] || i.name };
+        })
         .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" }));
       render();
     })
     .catch(() => { list.innerHTML = '<li class="message">Could not load the file list.</li>'; });
 
     search.addEventListener("input", render);
+    chips.addEventListener("click", e => {
+      const btn = e.target.closest(".chip");
+      if (!btn) return;
+      activeType = btn.dataset.type;
+      chips.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === btn));
+      render();
+    });
   </script>
 </body>
 </html>
