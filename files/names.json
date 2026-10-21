@@ -5,5 +5,9 @@
     "topic": "Gastroenterology",
     "author": "Dr. Name",
     "date": "2026-10-21"
+  },
+  "second-file.pdf": {
+    "title": "Antibiotic Prescribing Basics",
+    "topic": "Pharmacology"
   }
 }
