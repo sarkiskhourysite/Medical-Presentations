@@ -1,13 +1,7 @@
 {
-  "first-file.pptx": {
-    "title": "Guide to GI Symptoms",
-    "description": "A practical approach to triage and first-line treatment.",
-    "topic": "Gastroenterology",
-    "author": "Dr. Name",
-    "date": "2026-10-21"
-  },
-  "second-file.pdf": {
-    "title": "Antibiotic Prescribing Basics",
-    "topic": "Pharmacology"
+"The Triage & Treat Toolkit - Your Decisive Guide to GI Symptoms.pptx": {
+    "title": "Guide to GI Symptoms for PP",
+    "description": "A practical approach to triage and first-line treatment of common gastrointestinal symptoms.",
+    "topic": "Gastroenterology"
   }
 }
