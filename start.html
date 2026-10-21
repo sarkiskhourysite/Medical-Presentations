@@ -64,7 +64,7 @@
     header p  { position: relative; margin: 0 auto; max-width: 520px; opacity: .92; font-size: 16px; }
 
     /* ---------- Main panel ---------- */
-    main { max-width: 800px; margin: -52px auto 32px; padding: 0 16px; position: relative; }
+    main { max-width: 860px; margin: -52px auto 32px; padding: 0 16px; position: relative; }
     .panel {
       background: var(--card);
       border: 1px solid var(--border);
@@ -72,8 +72,8 @@
       box-shadow: var(--shadow);
       padding: 18px;
     }
-    .toolbar { display: flex; gap: 12px; align-items: center; }
-    .search { flex: 1; position: relative; }
+    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search { flex: 1 1 260px; position: relative; }
     .search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); }
     .search input {
       width: 100%;
@@ -85,10 +85,20 @@
       border-radius: 10px;
       outline: none;
     }
-    .search input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft); }
-    .count { font-size: 14px; color: var(--muted); white-space: nowrap; }
+    select {
+      font: inherit; font-size: 14px;
+      padding: 11px 12px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      cursor: pointer;
+    }
+    .search input:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft); }
 
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+    .topics-label { margin: 16px 0 8px; font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip {
       font: inherit; font-size: 14px; font-weight: 600;
       padding: 7px 14px;
@@ -98,16 +108,19 @@
       color: var(--muted);
       cursor: pointer;
     }
+    .chip small { font-weight: 500; opacity: .8; margin-left: 4px; }
     .chip:hover { border-color: var(--teal); color: var(--teal-dark); }
     .chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
     @media (prefers-color-scheme: dark) { .chip.active { color: #06201f; } }
 
+    .count { margin: 14px 0 2px; font-size: 13px; color: var(--muted); }
+
     /* ---------- File list ---------- */
-    ul { list-style: none; margin: 6px 0 0; padding: 0; }
+    ul { list-style: none; margin: 0; padding: 0; }
     li + li { border-top: 1px solid var(--border); }
     a.file {
       display: flex; align-items: center; gap: 14px;
-      padding: 14px 8px;
+      padding: 16px 8px;
       border-radius: 10px;
       color: inherit; text-decoration: none;
       transition: background .15s;
@@ -120,8 +133,18 @@
       color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .3px; text-transform: uppercase;
     }
     .info { flex: 1; min-width: 0; }
-    .title { font-size: 16px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .sub   { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .title { font-size: 16px; font-weight: 600; color: var(--text); }
+    .desc {
+      margin-top: 2px; font-size: 14px; color: var(--muted);
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 6px; font-size: 13px; color: var(--muted); }
+    .tag {
+      padding: 2px 10px; border-radius: 999px;
+      background: var(--teal-soft); color: var(--teal-dark);
+      font-weight: 600; font-size: 12px;
+    }
+    .meta span.item { display: inline-flex; align-items: center; gap: 5px; }
     .dl {
       flex: none; display: flex; align-items: center; gap: 6px;
       padding: 8px 14px; border-radius: 999px;
@@ -143,10 +166,9 @@
     .disclaimer strong { color: var(--text); }
     footer { text-align: center; color: var(--muted); font-size: 13px; padding: 0 16px 36px; }
 
-    @media (max-width: 520px) {
+    @media (max-width: 560px) {
       .dl span { display: none; } .dl { padding: 8px; }
-      .toolbar { flex-direction: column; align-items: stretch; gap: 6px; }
-      .count { text-align: right; }
+      .toolbar select { flex: 1 1 140px; }
     }
   </style>
 </head>
@@ -169,18 +191,24 @@
       <div class="toolbar">
         <label class="search">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-          <input id="search" type="search" placeholder="Search by title or topic..." aria-label="Search presentations" autocomplete="off">
+          <input id="search" type="search" placeholder="Search by title, topic, author..." aria-label="Search presentations" autocomplete="off">
         </label>
-        <span class="count" id="count" aria-live="polite"></span>
+        <select id="typeFilter" aria-label="Filter by file type">
+          <option value="all">All file types</option>
+          <option value="slides">Presentations</option>
+          <option value="docs">Documents</option>
+          <option value="other">Other</option>
+        </select>
+        <select id="sortBy" aria-label="Sort order">
+          <option value="az">Sort: A–Z</option>
+          <option value="new">Sort: Newest first</option>
+        </select>
       </div>
 
-      <div class="chips" id="chips" role="group" aria-label="Filter by file type">
-        <button class="chip active" data-type="all">All</button>
-        <button class="chip" data-type="slides">Presentations</button>
-        <button class="chip" data-type="docs">Documents</button>
-        <button class="chip" data-type="other">Other</button>
-      </div>
+      <div class="topics-label" id="topicsLabel" hidden>Topics</div>
+      <div class="chips" id="chips" role="group" aria-label="Filter by topic"></div>
 
+      <div class="count" id="count" aria-live="polite"></div>
       <ul id="list"><li class="message">Loading…</li></ul>
     </div>
 
@@ -195,16 +223,20 @@
     // ---- Settings ----
     // The user name and repository are detected automatically from the page address
     // (https://USER.github.io/REPO/). Fill them in only if the page is on a custom domain.
-    const USER   = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] : "sarkiskhourysite";
-    const REPO   = location.hostname.endsWith(".github.io") ? location.pathname.split("/")[1] : "Medical-Presentations";
-    const FOLDER = "files";   // folder that holds the files to download
+    const USER   = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] : "YOUR-USERNAME";
+    const REPO   = location.hostname.endsWith(".github.io") ? location.pathname.split("/")[1] : "YOUR-REPO";
+    const FOLDER = "files";          // folder that holds the files to download
+    const NO_TOPIC = "General";      // topic shown for files that have no topic in names.json
     // ------------------
 
-    const api    = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
-    const list   = document.getElementById("list");
-    const count  = document.getElementById("count");
-    const search = document.getElementById("search");
-    const chips  = document.getElementById("chips");
+    const api        = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
+    const list       = document.getElementById("list");
+    const count      = document.getElementById("count");
+    const search     = document.getElementById("search");
+    const chips      = document.getElementById("chips");
+    const typeFilter = document.getElementById("typeFilter");
+    const sortBy     = document.getElementById("sortBy");
+    const topicsLabel = document.getElementById("topicsLabel");
 
     const COLORS = {
       pdf: "#c2413f", ppt: "#d9622b", pptx: "#d9622b", key: "#d9622b",
@@ -222,22 +254,68 @@
       if (DOCS.includes(ext)) return "docs";
       return "other";
     }
-
     function formatSize(bytes) {
       if (bytes < 1024) return bytes + " B";
       if (bytes < 1048576) return (bytes / 1024).toFixed(0) + " KB";
       return (bytes / 1048576).toFixed(1) + " MB";
     }
+    function formatDate(iso) {
+      const d = new Date(iso + "T00:00:00");
+      return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    }
+    function icon(path) {
+      return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+    }
+    const ICON_USER = icon('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>');
+    const ICON_CAL  = icon('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>');
+    const ICON_FILE = icon('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>');
 
     let files = [];
-    let activeType = "all";
+    let activeTopic = "all";
+
+    function buildChips() {
+      const counts = {};
+      files.forEach(f => { counts[f.topic] = (counts[f.topic] || 0) + 1; });
+      const names = Object.keys(counts).sort((a, b) =>
+        a === NO_TOPIC ? 1 : b === NO_TOPIC ? -1 : a.localeCompare(b, undefined, { sensitivity: "base" }));
+
+      chips.innerHTML = "";
+      // Hide the topic area entirely if no file has a topic yet
+      const hasTopics = names.some(n => n !== NO_TOPIC);
+      topicsLabel.hidden = !hasTopics;
+      if (!hasTopics) return;
+
+      const make = (value, label, n) => {
+        const b = document.createElement("button");
+        b.className = "chip" + (activeTopic === value ? " active" : "");
+        b.dataset.topic = value;
+        b.textContent = label;
+        const s = document.createElement("small");
+        s.textContent = n;
+        b.appendChild(s);
+        chips.appendChild(b);
+      };
+      make("all", "All topics", files.length);
+      names.forEach(n => make(n, n, counts[n]));
+    }
 
     function render() {
       const q = search.value.trim().toLowerCase();
-      const shown = files.filter(f =>
-        (activeType === "all" || f.type === activeType) &&
-        (f.label + " " + f.name).toLowerCase().includes(q)
+      const type = typeFilter.value;
+
+      let shown = files.filter(f =>
+        (activeTopic === "all" || f.topic === activeTopic) &&
+        (type === "all" || f.type === type) &&
+        [f.title, f.name, f.description, f.topic, f.author].join(" ").toLowerCase().includes(q)
       );
+
+      shown.sort((a, b) => {
+        if (sortBy.value === "new") {
+          const da = a.date || "", db = b.date || "";
+          if (da !== db) return da < db ? 1 : -1;     // newest first, undated last
+        }
+        return a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" });
+      });
 
       list.innerHTML = "";
       shown.forEach(f => {
@@ -246,6 +324,7 @@
         a.className = "file";
         a.href = `${FOLDER}/${encodeURIComponent(f.name)}`;
         a.download = f.name;
+        a.title = f.name;
 
         const badge = document.createElement("div");
         badge.className = "badge";
@@ -256,11 +335,35 @@
         info.className = "info";
         const title = document.createElement("div");
         title.className = "title";
-        title.textContent = f.label;
-        const sub = document.createElement("div");
-        sub.className = "sub";
-        sub.textContent = (f.label !== f.name ? f.name + " · " : "") + formatSize(f.size);
-        info.append(title, sub);
+        title.textContent = f.title;
+        info.appendChild(title);
+
+        if (f.description) {
+          const desc = document.createElement("div");
+          desc.className = "desc";
+          desc.textContent = f.description;
+          info.appendChild(desc);
+        }
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        if (f.topic !== NO_TOPIC) {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = f.topic;
+          meta.appendChild(tag);
+        }
+        const addItem = (svg, text) => {
+          const s = document.createElement("span");
+          s.className = "item";
+          s.innerHTML = svg;
+          s.appendChild(document.createTextNode(text));
+          meta.appendChild(s);
+        };
+        if (f.author) addItem(ICON_USER, f.author);
+        if (f.date)   addItem(ICON_CAL, formatDate(f.date));
+        addItem(ICON_FILE, formatSize(f.size));
+        info.appendChild(meta);
 
         const dl = document.createElement("div");
         dl.className = "dl";
@@ -274,30 +377,43 @@
       if (!shown.length) {
         list.innerHTML = `<li class="message">${files.length ? "No file matches your search." : "No files yet."}</li>`;
       }
-      count.textContent = files.length ? `${shown.length} of ${files.length}` : "";
+      count.textContent = files.length ? `${shown.length} of ${files.length} files` : "";
     }
 
     Promise.all([
       fetch(api).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
       fetch(`${FOLDER}/names.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}))
     ])
-    .then(([items, nicknames]) => {
+    .then(([items, info]) => {
       files = items
         .filter(i => i.type === "file" && i.name !== "names.json")
         .map(i => {
           const ext = (i.name.includes(".") ? i.name.split(".").pop() : "file").toLowerCase();
-          return { name: i.name, size: i.size, ext, type: typeOf(ext), label: nicknames[i.name] || i.name };
-        })
-        .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: "base" }));
+          // An entry in names.json can be a plain nickname (text) or an object with details
+          let d = info[i.name];
+          if (typeof d === "string") d = { title: d };
+          d = d || {};
+          return {
+            name: i.name, size: i.size, ext, type: typeOf(ext),
+            title: d.title || i.name,
+            description: d.description || "",
+            topic: (d.topic || "").trim() || NO_TOPIC,
+            author: d.author || "",
+            date: d.date || ""
+          };
+        });
+      buildChips();
       render();
     })
     .catch(() => { list.innerHTML = '<li class="message">Could not load the file list.</li>'; });
 
     search.addEventListener("input", render);
+    typeFilter.addEventListener("change", render);
+    sortBy.addEventListener("change", render);
     chips.addEventListener("click", e => {
       const btn = e.target.closest(".chip");
       if (!btn) return;
-      activeType = btn.dataset.type;
+      activeTopic = btn.dataset.topic;
       chips.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === btn));
       render();
     });
