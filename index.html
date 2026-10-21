@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Downloads</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 16px; }
+    ul { list-style: none; padding: 0; }
+    li { border-bottom: 1px solid #ddd; }
+    a { display: block; padding: 12px 4px; text-decoration: none; color: #0366d6; }
+    a:hover { background: #f4f8ff; }
+  </style>
+</head>
+<body>
+  <h1>Files</h1>
+  <ul id="list"><li>Loading…</li></ul>
+
+  <script>
+    // ---- Settings (change these three) ----
+    const USER   = "YOUR-USERNAME";
+    const REPO   = "my-files";
+    const FOLDER = "files";
+    // ---------------------------------------
+
+    const api  = `https://api.github.com/repos/${USER}/${REPO}/contents/${FOLDER}`;
+    const list = document.getElementById("list");
+
+    Promise.all([
+      fetch(api).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch(`${FOLDER}/names.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}))
+    ])
+    .then(([items, nicknames]) => {
+      list.innerHTML = "";
+      items
+        .filter(i => i.type === "file" && i.name !== "names.json")
+        .forEach(f => {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `${FOLDER}/${encodeURIComponent(f.name)}`;
+          a.download = f.name;
+          a.textContent = nicknames[f.name] || f.name;
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+      if (!list.children.length) list.innerHTML = "<li>No files yet.</li>";
+    })
+    .catch(() => list.innerHTML = "<li>Could not load the file list.</li>");
+  </script>
+</body>
+</html>
