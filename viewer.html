@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Presentations</title>
+  <style>
+    :root {
+      --bg: #f4f8fa;
+      --card: #ffffff;
+      --text: #14232f;
+      --muted: #5f7280;
+      --border: #dce6ec;
+      --teal: #0e8a8a;
+      --teal-dark: #0a6e6e;
+      --teal-soft: #e3f4f3;
+      --on-teal: #ffffff;
+      --shadow: 0 1px 2px rgba(11, 46, 79, .06), 0 6px 20px rgba(11, 46, 79, .07);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c1319;
+        --card: #131d26;
+        --text: #e6eef3;
+        --muted: #8ba0af;
+        --border: #24323f;
+        --teal: #3cc2bd;
+        --teal-dark: #5fd3ce;
+        --teal-soft: #14302f;
+        --on-teal: #06201f;
+        --shadow: none;
+      }
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0b2e4f 0%, #0f4d6e 55%, #0e8a8a 100%);
+      color: #fff;
+      padding: 44px 16px 88px;
+      text-align: center;
+    }
+    header .ecg { position: absolute; left: 0; right: 0; bottom: 34px; width: 100%; height: 70px; opacity: .22; }
+    .brand { position: relative; display: inline-flex; margin-bottom: 10px; }
+    .cross {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    header h1 { position: relative; margin: 0 0 8px; font-size: clamp(26px, 5vw, 36px); letter-spacing: -.4px; font-weight: 700; }
+    header p  { position: relative; margin: 0 auto; max-width: 560px; opacity: .92; font-size: 16px; }
+
+    /* ---------- Panel ---------- */
+    main { max-width: 860px; margin: -52px auto 32px; padding: 0 16px; position: relative; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .search { position: relative; display: block; }
+    .search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .search input {
+      width: 100%;
+      padding: 12px 12px 12px 42px;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+    .search input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .chip {
+      font: inherit; font-size: 14px; font-weight: 600;
+      padding: 7px 14px; border-radius: 999px;
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      cursor: pointer;
+    }
+    .chip small { font-weight: 500; opacity: .8; margin-left: 4px; }
+    .chip:hover { border-color: var(--teal); color: var(--teal-dark); }
+    .chip.active { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+    .count { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+
+    /* ---------- List ---------- */
+    ul { list-style: none; margin: 6px 0 0; padding: 0; }
+    li + li { border-top: 1px solid var(--border); }
+    .row { display: flex; align-items: center; gap: 8px; border-radius: 10px; transition: background .15s; }
+    .row:hover { background: var(--teal-soft); }
+    a.open {
+      flex: 1; min-width: 0;
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 8px; border-radius: 10px;
+      color: inherit; text-decoration: none;
+    }
+    a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+    .badge {
+      flex: none; width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: #c2413f; color: #fff;
+      font-size: 11px; font-weight: 700; letter-spacing: .3px;
+    }
+    .info { flex: 1; min-width: 0; }
+    .title { font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+    .desc {
+      margin-top: 2px; font-size: 14px; color: var(--muted);
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 6px; font-size: 13px; color: var(--muted); }
+    .tag { padding: 2px 10px; border-radius: 999px; background: var(--teal-soft); color: var(--teal-dark); font-weight: 600; font-size: 12px; }
+    .row:hover .tag { background: var(--card); }
+    .go, a.dl {
+      flex: none; display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 999px;
+      font-size: 14px; font-weight: 600; text-decoration: none;
+    }
+    .go { background: var(--teal-soft); color: var(--teal-dark); }
+    .row:hover .go { background: var(--teal); color: var(--on-teal); }
+    a.dl { margin-right: 8px; border: 1px solid var(--border); color: var(--muted); }
+    a.dl:hover { border-color: var(--teal); color: var(--teal-dark); }
+    .message { text-align: center; color: var(--muted); padding: 36px 8px; }
+
+    @media (max-width: 560px) {
+      .go span, a.dl span { display: none; }
+      .go, a.dl { padding: 9px; }
+    }
+
+    /* ---------- Notices ---------- */
+    .notice {
+      margin-top: 18px; padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 10px 10px 0;
+      font-size: 13px; color: var(--muted);
+    }
+    .notice strong { color: var(--text); }
+    footer { text-align: center; color: var(--muted); font-size: 13px; padding: 18px 16px 36px; }
+  </style>
+</head>
+<body>
+  <header>
+    <svg class="ecg" viewBox="0 0 1200 70" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="0,38 260,38 290,38 310,12 335,62 360,22 380,38 640,38 670,38 690,12 715,62 740,22 760,38 1200,38"/>
+    </svg>
+    <div class="brand">
+      <div class="cross" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>
+      </div>
+    </div>
+    <h1>Presentations</h1>
+    <p>Choose a presentation to open it in a new tab.</p>
+  </header>
+
+  <main>
+    <div class="panel">
+      <label class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="Search presentations..." aria-label="Search presentations" autocomplete="off">
+      </label>
+      <div class="chips" id="chips" role="group" aria-label="Filter by category" hidden></div>
+      <div class="count" id="count" aria-live="polite"></div>
+      <ul id="list"><li class="message">Loading…</li></ul>
+    </div>
+
+    <div class="notice">
+      <strong>For healthcare professionals.</strong> This material is intended for education and professional reference. It does not replace clinical judgment, local guidelines or the care of a patient by a qualified physician.
+    </div>
+  </main>
+
+  <footer>Presentations open in a new tab with your browser's own PDF viewer.</footer>
+
+  <script>
+    // ---- Settings ----
+    // The user name and repository are detected automatically from the page address
+    // (https://USER.github.io/REPO/). Fill them in only if the page is on a custom domain.
+    const USER   = location.hostname.endsWith(".github.io") ? location.hostname.split(".")[0] : "YOUR-USERNAME";
+    const REPO   = location.hostname.endsWith(".github.io") ? location.pathname.split("/")[1] : "YOUR-REPO";
+    const FOLDER = "files";                 // folder that holds the PDF presentations (subfolders = categories)
+    const ROOT_CATEGORY = "General";        // presentations placed directly in the main folder
+    // ------------------
+
+    const list   = document.getElementById("list");
+    const count  = document.getElementById("count");
+    const search = document.getElementById("search");
+    const chips  = document.getElementById("chips");
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1048576) return (bytes / 1024).toFixed(0) + " KB";
+      return (bytes / 1048576).toFixed(1) + " MB";
+    }
+    function formatDate(iso) {
+      const d = new Date(iso + "T00:00:00");
+      return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    }
+    // Encode every part of a path (spaces, &, accents...) but keep the slashes
+    function fileUrl(rel) {
+      return FOLDER + "/" + rel.split("/").map(encodeURIComponent).join("/");
+    }
+
+    const ICON_OPEN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>';
+    const ICON_DOWN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>';
+
+    let files = [];
+    let activeCat = "all";
+
+    function makeRow(f) {
+      const li = document.createElement("li");
+      const row = document.createElement("div");
+      row.className = "row";
+
+      // The main part of the row opens the PDF in a new tab
+      const a = document.createElement("a");
+      a.className = "open";
+      a.href = f.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.title = "Open in a new tab";
+
+      const badge = document.createElement("div");
+      badge.className = "badge";
+      badge.textContent = "PDF";
+
+      const info = document.createElement("div");
+      info.className = "info";
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = f.title;
+      info.appendChild(title);
+
+      if (f.description) {
+        const desc = document.createElement("div");
+        desc.className = "desc";
+        desc.textContent = f.description;
+        info.appendChild(desc);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const label = f.topic || f.folder;
+      if (label) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = label;
+        meta.appendChild(tag);
+      }
+      const bits = [];
+      if (f.author) bits.push(f.author);
+      if (f.date)   bits.push(formatDate(f.date));
+      bits.push(formatSize(f.size));
+      const rest = document.createElement("span");
+      rest.textContent = bits.join(" · ");
+      meta.appendChild(rest);
+      info.appendChild(meta);
+
+      const go = document.createElement("span");
+      go.className = "go";
+      go.innerHTML = ICON_OPEN + "<span>Open</span>";
+
+      a.append(badge, info, go);
+
+      // A separate button saves the file instead
+      const dl = document.createElement("a");
+      dl.className = "dl";
+      dl.href = f.url;
+      dl.download = f.name;
+      dl.setAttribute("aria-label", "Download " + f.title);
+      dl.title = "Download";
+      dl.innerHTML = ICON_DOWN + "<span>Download</span>";
+
+      row.append(a, dl);
+      li.appendChild(row);
+      return li;
+    }
+
+    function render() {
+      const q = search.value.trim().toLowerCase();
+      const shown = files
+        .filter(f => (activeCat === "all" || f.category === activeCat) &&
+                     [f.title, f.name, f.description, f.topic, f.author, f.folder].join(" ").toLowerCase().includes(q))
+        .sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: "base" }));
+
+      list.innerHTML = "";
+      shown.forEach(f => list.appendChild(makeRow(f)));
+      if (!shown.length) {
+        list.innerHTML = `<li class="message">${files.length ? "No presentation matches your search." : "No presentations yet. Upload PDF files to the files folder."}</li>`;
+      }
+      count.textContent = files.length ? `${shown.length} of ${files.length} presentations` : "";
+    }
+
+    // Category buttons: one per subfolder of "files"
+    function buildChips() {
+      const counts = {};
+      files.forEach(f => { counts[f.category] = (counts[f.category] || 0) + 1; });
+      const names = Object.keys(counts).sort((a, b) =>
+        a === ROOT_CATEGORY ? 1 : b === ROOT_CATEGORY ? -1 :
+        a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }));
+
+      chips.innerHTML = "";
+      chips.hidden = names.length < 2;       // nothing to choose from with a single category
+      if (names.length < 2) return;
+
+      const make = (value, label, n) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip" + (activeCat === value ? " active" : "");
+        b.dataset.cat = value;
+        b.textContent = label;
+        const s = document.createElement("small");
+        s.textContent = n;
+        b.appendChild(s);
+        chips.appendChild(b);
+      };
+      make("all", "All", files.length);
+      names.forEach(n => make(n, n.replace(/_+/g, " "), counts[n]));
+    }
+
+    chips.addEventListener("click", e => {
+      const btn = e.target.closest(".chip");
+      if (!btn) return;
+      activeCat = btn.dataset.cat;
+      chips.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === btn));
+      render();
+    });
+    search.addEventListener("input", render);
+
+    // One request lists every file in the repository, including all subfolders
+    async function loadTree() {
+      let lastErr = new Error("Could not load");
+      for (const ref of ["HEAD", "main", "master"]) {
+        try {
+          const r = await fetch(`https://api.github.com/repos/${USER}/${REPO}/git/trees/${ref}?recursive=1`);
+          if (r.ok) return (await r.json()).tree || [];
+          lastErr = new Error(r.status);
+          if (r.status === 403 || r.status === 429) break;   // rate limit: do not retry
+        } catch (e) { lastErr = e; }
+      }
+      throw lastErr;
+    }
+
+    Promise.all([
+      loadTree(),
+      fetch(`${FOLDER}/names.json`).then(r => r.ok ? r.json() : {}).catch(() => ({}))
+    ])
+    .then(([tree, info]) => {
+      const prefix = FOLDER + "/";
+      files = tree
+        .filter(t => t.type === "blob" && t.path.startsWith(prefix))
+        .map(t => {
+          const rel   = t.path.slice(prefix.length);
+          const parts = rel.split("/");
+          const name  = parts[parts.length - 1];
+          const ext   = (name.includes(".") ? name.split(".").pop() : "").toLowerCase();
+          let d = info[rel] !== undefined ? info[rel] : info[name];   // names.json is optional
+          if (typeof d === "string") d = { title: d };
+          d = d || {};
+          return {
+            rel, name, ext, url: fileUrl(rel), size: t.size || 0,
+            folder: parts.length > 1 ? parts[0].replace(/_+/g, " ") : "",
+            category: parts.length > 1 ? parts[0] : ROOT_CATEGORY,
+            title: d.title || name.replace(/\.[^.]+$/, ""),
+            description: d.description || "",
+            topic: (d.topic || "").trim(),
+            author: d.author || "",
+            date: d.date || "",
+            hidden: !!d.hidden
+          };
+        })
+        .filter(f => f.ext === "pdf" && !f.hidden);
+
+      buildChips();
+      render();
+    })
+    .catch(() => { list.innerHTML = '<li class="message">Could not load the presentation list.</li>'; });
+  </script>
+</body>
+</html>
